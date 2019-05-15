@@ -1,1 +1,1 @@
-CourseWork OOP
+Web based Slot Machine created using play framework
