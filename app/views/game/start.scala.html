@@ -1,0 +1,143 @@
+<html>
+    <title>Slot Machine </title>
+    <head>
+        <script src="@routes.Assets.versioned("javascripts/logjs.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/gameRun.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/logdbUI.js")"></script>
+        <link type="text/css" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/login.css")">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src = "@routes.Assets.versioned("javascripts/log2.js")" type = "text/javascript" ></script>
+        <link rel="stylesheet"  href="@routes.Assets.versioned("stylesheets/gameStyle.css")">
+    </head>
+<!--loading animation-->
+    <body background="@routes.Assets.versioned("/images/back.jpg")">
+        <div id="load">
+            <div>.</div>
+            <div>.</div>
+            <div>.</div>
+            <div>G</div>
+            <div>N</div>
+            <div>I</div>
+            <div>D</div>
+            <div>A</div>
+            <div>O</div>
+            <div>L</div>
+        </div>
+        <div id="signPage">
+            <h3 class="spinBtn" id="btn"><span>SIGN IN</span></h3>
+            <img align="center" src="@routes.Assets.versioned("/images/logo.png")">
+        </div>
+    <div id="game">
+        <button id="signOut" align="right">SIGN OUT</button>
+
+        <h3 id="welcome"></h3>
+
+        <div><img id="mainDiv" src="@routes.Assets.versioned("/images/ReelImages/win.gif")">
+            <table class="mainStruc">
+                <tr>
+                    <td colspan="3"><img src="@routes.Assets.versioned("/images/logo.png")"></td>
+
+                </tr>
+                <tr>
+                    <td colspan="3"><h3 class="spinBtn" id="SPIN"><span>SPIN!!</span></h3></td>
+
+                </tr>
+                    <!--Reels-->
+
+                <tr>
+                    <td id="r0">
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/bell.png")" style="width:100%">
+                        </div>
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/cherry.png")" style="width:100%">
+                        </div>
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/lemon.png")" style="width:100%">
+                        </div>
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/plum.png")" style="width:100%">
+                        </div>
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/redseven.png")" style="width:100%">
+                        </div>
+                        <div class="reel0 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/watermelon.png")" style="width:100%">
+                        </div>
+                    </td>
+                    <td id="r1">
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/bell.png")" style="width:100%">
+                        </div>
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/cherry.png")" style="width:100%">
+                        </div>
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/lemon.png")" style="width:100%">
+                        </div>
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/plum.png")" style="width:100%">
+                        </div>
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/redseven.png")" style="width:100%">
+                        </div>
+                        <div class="reel1 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/watermelon.png")" style="width:100%">
+                        </div>
+                    </td>
+                    <td id="r2">
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/bell.png")" style="width:100%">
+                        </div>
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/cherry.png")" style="width:100%">
+                        </div>
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/lemon.png")" style="width:100%">
+                        </div>
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/plum.png")" style="width:100%">
+                        </div>
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/redseven.png")" style="width:100%">
+                        </div>
+                        <div class="reel2 fade">
+                            <img src="@routes.Assets.versioned("/images/ReelImages/watermelon.png")" style="width:100%">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <h4>Current Bet:<span id="lblcurBet"></span></h4> <h4>Credits:<span id="lblcurCredit">10</span></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3 class="spinBtn" id="addC"><span>Add Coin</span></h3>
+                    </td>
+                    <td>
+                        <h3 class="spinBtn" id="betM"><span>Bet Max</span></h3>
+                    </td>
+                    <td>
+                        <h3 class="spinBtn" id="bet"><span>Bet One</span></h3>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <h3 class="spinBtn" id="statShow"><span>Show Stats</span></h3>
+                    </td>
+
+
+                </tr>
+
+            </table>
+
+
+        </div>
+
+    </div>
+    </body>
+
+
+</html>

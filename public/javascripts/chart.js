@@ -1,0 +1,221 @@
+
+function showAvg() {
+    document.getElementById('avg').innerHTML="Average Earnings :-"+sessionStorage.getItem('showAvg');
+
+}
+$(function(){
+    showAvg();
+    //retrieving data from sessionStorage
+    var win = sessionStorage.getItem('win');
+    var lose = sessionStorage.getItem('lose');
+    alert(win+" "+lose);
+    $("#pieChart").drawStatPie([
+        { title: "Win Count",     value : parseFloat(win),  color: "#5cff8d" },
+        { title: "Lose Count",    value:  parseFloat(lose),   color: "#fe395f" }
+    ]);
+});
+
+//jquery for drawing the pie chart
+;(function($, undefined) {
+    $.fn.drawStatPie = function(data, options) {
+        var $this = this,
+            W = $this.width()/1.4,
+            H = $this.height()/1.4,
+            centerX = W/2,
+            centerY = H/2,
+            cos = Math.cos,
+            sin = Math.sin,
+            PI = Math.PI,
+            settings = $.extend({
+                segmentShowStroke : true,
+                segmentStrokeColor : "#fff",
+                segmentStrokeWidth : 1,
+                baseColor: "#fff",
+                baseOffset: 15,
+                edgeOffset: 30,//offset from edge of $this
+                lightPieClass: "lightPie",
+                pieSegmentGroupClass: "pieSegmentGroup",
+                pieSegmentClass: "pieSegment",
+                lightPiesOffset: 12,//lighten pie's width
+                lightPiesOpacity: .4,//lighten pie's default opacity
+                animation : true,
+                animationSteps : 90,
+                animationEasing : "easeInOutExpo",
+                tipOffsetX: -15,
+                tipOffsetY: -45,
+                tipClass: "pieTip",
+                beforeDraw: function(){  },
+                afterDrawed : function(){  },
+                onPieMouseenter : function(e,data){  },
+                onPieMouseleave : function(e,data){  },
+                onPieClick : function(e,data){  }
+            }, options),
+            animationOptions = {
+                linear : function (t){
+                    return t;
+                },
+                easeInOutExpo: function (t) {
+                    var v = t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t;
+                    return (v>1) ? 1 : v;
+                }
+            },
+            requestAnimFrame = function(){
+                return window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimationFrame ||
+                    function(callback) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+            }();
+
+        var $wrapper = $('<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>').appendTo($this);
+        var $groups = [],
+            $pies = [],
+            $lightPies = [],
+            easingFunction = animationOptions[settings.animationEasing],
+            pieRadius = Min([H/2,W/2]) - settings.edgeOffset,
+            segmentTotal = 0;
+
+        //Drawing the base
+        var drawBasePie = function(){
+            var base = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            var $base = $(base).appendTo($wrapper);
+            base.setAttribute("cx", centerX);
+            base.setAttribute("cy", centerY);
+            base.setAttribute("r", pieRadius+settings.baseOffset);
+            base.setAttribute("fill", settings.baseColor);
+        }();
+
+        //Setting up the pie segments
+        var pathGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        var $pathGroup = $(pathGroup).appendTo($wrapper);
+        $pathGroup[0].setAttribute("opacity",0);
+
+        //Seting up the tooltips
+        var $tip = $('<div class="' + settings.tipClass + '" />').appendTo('body').hide(),
+            tipW = $tip.width(),
+            tipH = $tip.height();
+
+        for (var i = 0, len = data.length; i < len; i++){
+            segmentTotal += data[i].value;
+            var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.setAttribute("data-order", i);
+            g.setAttribute("class", settings.pieSegmentGroupClass);
+            $groups[i] = $(g).appendTo($pathGroup);
+            $groups[i]
+                .on("mouseenter", pathMouseEnter)
+                .on("mouseleave", pathMouseLeave)
+                .on("mousemove", pathMouseMove);
+
+            var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            p.setAttribute("stroke-width", settings.segmentStrokeWidth);
+            p.setAttribute("stroke", settings.segmentStrokeColor);
+            p.setAttribute("stroke-miterlimit", 2);
+            p.setAttribute("fill", data[i].color);
+            p.setAttribute("class", settings.pieSegmentClass);
+            $pies[i] = $(p).appendTo($groups[i]);
+
+            var lp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            lp.setAttribute("stroke-width", settings.segmentStrokeWidth);
+            lp.setAttribute("stroke", settings.segmentStrokeColor);
+            lp.setAttribute("stroke-miterlimit", 2);
+            lp.setAttribute("fill", data[i].color);
+            lp.setAttribute("opacity", settings.lightPiesOpacity);
+            lp.setAttribute("class", settings.lightPieClass);
+            $lightPies[i] = $(lp).appendTo($groups[i]);
+        }
+
+        settings.beforeDraw.call($this);
+        //Animation start
+        triggerAnimation();
+
+        function pathMouseEnter(e){
+            var index = $(this).data().order;
+            $tip.text(data[index].title + ": " + data[index].value).fadeIn(200);
+            if ($groups[index][0].getAttribute("data-active") !== "active"){
+                $lightPies[index].animate({opacity: .8}, 180);
+            }
+            settings.onPieMouseenter.apply($(this),[e,data]);
+        }
+        function pathMouseLeave(e){
+            var index = $(this).data().order;
+            $tip.hide();
+            if ($groups[index][0].getAttribute("data-active") !== "active"){
+                $lightPies[index].animate({opacity: settings.lightPiesOpacity}, 100);
+            }
+            settings.onPieMouseleave.apply($(this),[e,data]);
+        }
+        function pathMouseMove(e){
+            $tip.css({
+                top: e.pageY + settings.tipOffsetY,
+                left: e.pageX - $tip.width() / 2 + settings.tipOffsetX
+            });
+        }
+
+        function drawPieSegments (animationDecimal){
+            var startRadius = -PI/2,//90 degree
+                rotateAnimation = 1;
+            if (settings.animation) {
+                rotateAnimation = animationDecimal;
+            }
+
+            $pathGroup[0].setAttribute("opacity",animationDecimal);
+
+            //draw each path
+            for (var i = 0, len = data.length; i < len; i++){
+                var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (PI*2)),//start radian
+                    endRadius = startRadius + segmentAngle,
+                    largeArc = ((endRadius - startRadius) % (PI * 2)) > PI ? 1 : 0,
+                    startX = centerX + cos(startRadius) * pieRadius,
+                    startY = centerY + sin(startRadius) * pieRadius,
+                    endX = centerX + cos(endRadius) * pieRadius,
+                    endY = centerY + sin(endRadius) * pieRadius,
+                    startX2 = centerX + cos(startRadius) * (pieRadius + settings.lightPiesOffset),
+                    startY2 = centerY + sin(startRadius) * (pieRadius + settings.lightPiesOffset),
+                    endX2 = centerX + cos(endRadius) * (pieRadius + settings.lightPiesOffset),
+                    endY2 = centerY + sin(endRadius) * (pieRadius + settings.lightPiesOffset);
+                var cmd = [
+                    'M', startX, startY,//Move pointer
+                    'A', pieRadius, pieRadius, 0, largeArc, 1, endX, endY,//Draw outer arc path
+                    'L', centerX, centerY,//Draw line to the center.
+                    'Z'//Cloth path
+                ];
+                var cmd2 = [
+                    'M', startX2, startY2,
+                    'A', pieRadius + settings.lightPiesOffset, pieRadius + settings.lightPiesOffset, 0, largeArc, 1, endX2, endY2,//Drawing outer arc path of pie
+                    'L', centerX, centerY,
+                    'Z'
+                ];
+                $pies[i][0].setAttribute("d",cmd.join(' '));
+                $lightPies[i][0].setAttribute("d", cmd2.join(' '));
+                startRadius += segmentAngle;
+            }
+        }
+
+        var animFrameAmount = (settings.animation)? 1/settings.animationSteps : 1,
+            animCount =(settings.animation)? 0 : 1;
+        function triggerAnimation(){
+            if (settings.animation) {
+                requestAnimFrame(animationPie);
+            } else {
+                drawPieSegments(1);
+            }
+        }
+        function animationPie(){
+            animCount += animFrameAmount;
+            drawPieSegments(easingFunction(animCount));
+            if (animCount < 1){
+                requestAnimFrame(arguments.callee);
+            } else {
+                settings.afterDrawed.call($this);
+            }
+        }
+
+        function Min(arr){
+            return Math.min.apply(null, arr);
+        }
+        return $this;
+    };
+})(jQuery);

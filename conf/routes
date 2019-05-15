@@ -1,0 +1,9 @@
+# Routes
+
+
+# An example controller showing a sample home page
+GET     /                           controllers.SlotMachineController.start
+GET     /stats                      controllers.SlotMachineController.stats
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
